@@ -385,6 +385,16 @@
     }
   });
 
+  // ---- Apply saved enabled/disabled state on load ----
+  chrome.storage?.local?.get('blindbugEnabled', (data) => {
+    const enabled = data.blindbugEnabled !== false; // default on
+    toolbar.classList.toggle('blindbug-hidden', !enabled);
+    if (!enabled) {
+      setTool(null);
+      canvas.classList.remove('bb-drawing', 'bb-erasing');
+    }
+  });
+
   // ---- Listen for popup toggle message ----
   chrome.runtime?.onMessage?.addListener((msg) => {
     if (msg.type === 'blindbug-toggle') {
