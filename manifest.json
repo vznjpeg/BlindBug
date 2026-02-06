@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "BlindBug",
+  "version": "1.0.0",
+  "description": "Blur sensitive data instantly during screen recording or sharing. No editing required.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["content.css"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

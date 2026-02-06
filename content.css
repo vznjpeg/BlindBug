@@ -1,0 +1,175 @@
+/* ============================================================
+   BlindBug - Floating Toolbar & Canvas Styles
+   ============================================================ */
+
+/* ---------- Toolbar ---------- */
+#blindbug-toolbar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1a1a2e;
+  border: 1px solid #2d2d4a;
+  border-radius: 14px;
+  padding: 6px 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+
+#blindbug-toolbar.blindbug-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Logo in toolbar */
+#blindbug-toolbar .bb-logo {
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+  border-radius: 6px;
+}
+
+/* Separator */
+#blindbug-toolbar .bb-sep {
+  width: 1px;
+  height: 22px;
+  background: #3a3a5e;
+  margin: 0 4px;
+}
+
+/* Toolbar buttons */
+#blindbug-toolbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  color: #c5c5e0;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+#blindbug-toolbar button:hover {
+  background: #2d2d4a;
+  color: #fff;
+}
+
+#blindbug-toolbar button.bb-active {
+  background: #6BCB4A;
+  color: #1a1a2e;
+}
+
+#blindbug-toolbar button.bb-active:hover {
+  background: #7ED95C;
+}
+
+#blindbug-toolbar button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Save button special style */
+#blindbug-toolbar button.bb-save {
+  background: #6BCB4A;
+  color: #1a1a2e;
+  font-weight: 600;
+}
+
+#blindbug-toolbar button.bb-save:hover {
+  background: #7ED95C;
+}
+
+/* Undo button */
+#blindbug-toolbar button.bb-undo:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ---------- Drawing Canvas ---------- */
+#blindbug-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483646;
+  cursor: crosshair;
+  pointer-events: none;
+}
+
+#blindbug-canvas.bb-drawing {
+  pointer-events: auto;
+}
+
+#blindbug-canvas.bb-erasing {
+  pointer-events: auto;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Crect x='4' y='4' width='16' height='16' rx='2' fill='white' stroke='%23333' stroke-width='1.5'/%3E%3Cline x1='8' y1='8' x2='16' y2='16' stroke='%23999' stroke-width='1.5'/%3E%3Cline x1='16' y1='8' x2='8' y2='16' stroke='%23999' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, auto;
+}
+
+/* ---------- Blur overlay regions ---------- */
+.blindbug-blur-region {
+  position: fixed;
+  z-index: 2147483645;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  background: rgba(100, 100, 140, 0.15);
+  border: 1px solid rgba(107, 203, 74, 0.3);
+  border-radius: 4px;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* Pending (unsaved) blur regions have dashed border */
+.blindbug-blur-region.bb-pending {
+  border: 2px dashed rgba(107, 203, 74, 0.7);
+  animation: bb-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes bb-pulse {
+  0%, 100% { border-color: rgba(107, 203, 74, 0.7); }
+  50% { border-color: rgba(107, 203, 74, 0.3); }
+}
+
+/* Title blur */
+.blindbug-title-hidden {
+  filter: blur(8px) !important;
+  user-select: none !important;
+}
+
+/* ---------- Toast notifications ---------- */
+#blindbug-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 2147483647;
+  background: #1a1a2e;
+  color: #c5c5e0;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+#blindbug-toast.bb-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
