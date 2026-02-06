@@ -16,6 +16,10 @@
   let savedRegions = [];          // saved blur rects (DOM elements)
   let undoStack = [];             // { type, element?, ... } for undo
   let titleHidden = false;
+  let blurLevel = 18;             // current blur px (default 18)
+  const BLUR_STEP = 4;
+  const BLUR_MIN = 4;
+  const BLUR_MAX = 40;
 
   // ---- Inline SVG icons ----
   const ICONS = {
@@ -39,6 +43,13 @@
     <button data-tool="undo" class="bb-undo" title="Undo last action">${ICONS.undo}<span>Undo</span></button>
     <div class="bb-sep"></div>
     <button data-tool="title" title="Hide / show page title">${ICONS.title}<span>Hide Title</span></button>
+    <div class="bb-sep"></div>
+    <div class="bb-opacity-group">
+      <span class="bb-opacity-label">Blur</span>
+      <button class="bb-opacity-btn" data-tool="blur-down" title="Decrease blur intensity">&minus;</button>
+      <span class="bb-opacity-value" id="bb-blur-val">${blurLevel}px</span>
+      <button class="bb-opacity-btn" data-tool="blur-up" title="Increase blur intensity">+</button>
+    </div>
   `;
   document.documentElement.appendChild(toolbar);
 
@@ -96,6 +107,7 @@
   }
 
   // ---- Create blur region element ----
+  // rect uses DOCUMENT coordinates (scroll-aware), so the region scrolls with content
   function createBlurRegion(rect, pending) {
     const el = document.createElement('div');
     el.className = 'blindbug-blur-region' + (pending ? ' bb-pending' : '');
@@ -103,7 +115,11 @@
     el.style.top = rect.y + 'px';
     el.style.width = rect.w + 'px';
     el.style.height = rect.h + 'px';
-    document.documentElement.appendChild(el);
+    const blur = rect.blur || blurLevel;
+    el.style.backdropFilter = `blur(${blur}px)`;
+    el.style.webkitBackdropFilter = `blur(${blur}px)`;
+    el.dataset.blur = blur;
+    document.body.appendChild(el);
     return el;
   }
 
@@ -139,15 +155,20 @@
     isDrawing = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const x = Math.min(drawStart.x, e.clientX);
-    const y = Math.min(drawStart.y, e.clientY);
+    // Viewport coordinates for size
+    const vx = Math.min(drawStart.x, e.clientX);
+    const vy = Math.min(drawStart.y, e.clientY);
     const w = Math.abs(e.clientX - drawStart.x);
     const h = Math.abs(e.clientY - drawStart.y);
 
     // Minimum size gate
     if (w < 10 || h < 10) return;
 
-    const region = createBlurRegion({ x, y, w, h }, true);
+    // Convert to DOCUMENT coordinates so region scrolls with the page
+    const docX = vx + window.scrollX;
+    const docY = vy + window.scrollY;
+
+    const region = createBlurRegion({ x: docX, y: docY, w, h }, true);
     pendingRegions.push(region);
     undoStack.push({ type: 'add-pending', element: region });
     updateUndoBtn();
@@ -233,14 +254,14 @@
       }
       case 'erase-saved': {
         // Restore erased saved region
-        document.documentElement.appendChild(action.element);
+        document.body.appendChild(action.element);
         savedRegions.splice(action.index, 0, action.element);
         showToast('Undo: blur restored');
         break;
       }
       case 'erase-pending': {
         // Restore erased pending region
-        document.documentElement.appendChild(action.element);
+        document.body.appendChild(action.element);
         pendingRegions.splice(action.index, 0, action.element);
         showToast('Undo: pending blur restored');
         break;
@@ -302,6 +323,21 @@
     updateUndoBtn();
   }
 
+  // ---- Opacity / blur-level helpers ----
+  function updateBlurLabel() {
+    const label = toolbar.querySelector('#bb-blur-val');
+    if (label) label.textContent = blurLevel + 'px';
+  }
+
+  function adjustBlur(delta) {
+    const prev = blurLevel;
+    blurLevel = Math.max(BLUR_MIN, Math.min(BLUR_MAX, blurLevel + delta));
+    if (blurLevel !== prev) {
+      updateBlurLabel();
+      showToast(`Blur intensity: ${blurLevel}px`);
+    }
+  }
+
   // ---- Toolbar click handler ----
   toolbar.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
@@ -321,6 +357,12 @@
         break;
       case 'title':
         toggleTitle();
+        break;
+      case 'blur-up':
+        adjustBlur(BLUR_STEP);
+        break;
+      case 'blur-down':
+        adjustBlur(-BLUR_STEP);
         break;
     }
   });
