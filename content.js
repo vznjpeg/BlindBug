@@ -50,6 +50,8 @@
       <span class="bb-opacity-value" id="bb-blur-val">${blurLevel}px</span>
       <button class="bb-opacity-btn" data-tool="blur-up" title="Increase blur intensity">+</button>
     </div>
+    <div class="bb-sep"></div>
+    <button data-tool="close" class="bb-close" title="Hide toolbar on this page">&times;</button>
   `;
   document.documentElement.appendChild(toolbar);
 
@@ -363,6 +365,12 @@
         break;
       case 'blur-down':
         adjustBlur(-BLUR_STEP);
+        break;
+      case 'close':
+        toolbar.classList.add('blindbug-hidden');
+        setTool(null);
+        canvas.classList.remove('bb-drawing', 'bb-erasing');
+        chrome.storage?.local?.set({ blindbugEnabled: false });
         break;
     }
   });

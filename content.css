@@ -99,6 +99,23 @@
   cursor: default;
 }
 
+/* Close button */
+#blindbug-toolbar button.bb-close {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  color: #666680;
+  border-radius: 50%;
+}
+
+#blindbug-toolbar button.bb-close:hover {
+  background: #ff4d4d;
+  color: #fff;
+}
+
 /* ---------- Drawing Canvas ---------- */
 #blindbug-canvas {
   position: fixed;
