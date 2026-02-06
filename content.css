@@ -19,7 +19,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   user-select: none;
-  transition: opacity 0.2s;
+  transition: opacity 0.25s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
 #blindbug-toolbar.blindbug-hidden {
@@ -33,6 +33,8 @@
   height: 26px;
   margin-right: 4px;
   border-radius: 6px;
+  display: block;
+  object-fit: contain;
 }
 
 /* Separator */
@@ -41,6 +43,7 @@
   height: 22px;
   background: #3a3a5e;
   margin: 0 4px;
+  transition: background 0.3s;
 }
 
 /* Toolbar buttons */
@@ -49,7 +52,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   border: none;
   color: #c5c5e0;
   font-size: 12px;
@@ -57,23 +60,33 @@
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, box-shadow 0.2s, transform 0.12s;
   white-space: nowrap;
   font-family: inherit;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 #blindbug-toolbar button:hover {
   background: #2d2d4a;
   color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+#blindbug-toolbar button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 #blindbug-toolbar button.bb-active {
   background: #6BCB4A;
   color: #1a1a2e;
+  box-shadow: 0 3px 12px rgba(107, 203, 74, 0.4);
 }
 
 #blindbug-toolbar button.bb-active:hover {
   background: #7ED95C;
+  box-shadow: 0 5px 18px rgba(107, 203, 74, 0.5);
 }
 
 #blindbug-toolbar button svg {
@@ -87,16 +100,20 @@
   background: #6BCB4A;
   color: #1a1a2e;
   font-weight: 600;
+  box-shadow: 0 3px 12px rgba(107, 203, 74, 0.35);
 }
 
 #blindbug-toolbar button.bb-save:hover {
   background: #7ED95C;
+  box-shadow: 0 5px 18px rgba(107, 203, 74, 0.45);
 }
 
 /* Undo button */
 #blindbug-toolbar button.bb-undo:disabled {
   opacity: 0.35;
   cursor: default;
+  box-shadow: none;
+  transform: none;
 }
 
 /* Close button */
@@ -109,11 +126,33 @@
   line-height: 1;
   color: #666680;
   border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
 }
 
 #blindbug-toolbar button.bb-close:hover {
   background: #ff4d4d;
   color: #fff;
+  box-shadow: 0 3px 12px rgba(255, 77, 77, 0.4);
+}
+
+/* Theme toggle button */
+#blindbug-toolbar button.bb-theme {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+}
+
+#blindbug-toolbar button.bb-theme:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+#blindbug-toolbar button.bb-theme svg {
+  width: 15px;
+  height: 15px;
 }
 
 /* ---------- Drawing Canvas ---------- */
@@ -179,6 +218,7 @@
   color: #8888aa;
   margin-right: 2px;
   white-space: nowrap;
+  transition: color 0.3s;
 }
 
 #blindbug-toolbar .bb-opacity-btn {
@@ -196,6 +236,7 @@
   min-width: 32px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
 }
 
 /* ---------- Toast notifications ---------- */
@@ -214,10 +255,96 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s, transform 0.25s;
+  transition: opacity 0.25s, transform 0.25s, background 0.3s, color 0.3s;
 }
 
 #blindbug-toast.bb-show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================
+   LIGHT MODE
+   ========================================================== */
+#blindbug-toolbar.bb-light {
+  background: #ffffff;
+  border-color: #e0e0e8;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+#blindbug-toolbar.bb-light .bb-sep {
+  background: #dddde6;
+}
+
+#blindbug-toolbar.bb-light button {
+  color: #3a3a50;
+  background: rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+#blindbug-toolbar.bb-light button:hover {
+  background: #f0f0f6;
+  color: #1a1a2e;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+#blindbug-toolbar.bb-light button:active {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+#blindbug-toolbar.bb-light button.bb-active {
+  background: #6BCB4A;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(107, 203, 74, 0.35);
+}
+
+#blindbug-toolbar.bb-light button.bb-active:hover {
+  background: #5aba3e;
+  box-shadow: 0 5px 18px rgba(107, 203, 74, 0.4);
+}
+
+#blindbug-toolbar.bb-light button.bb-save {
+  background: #6BCB4A;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(107, 203, 74, 0.3);
+}
+
+#blindbug-toolbar.bb-light button.bb-save:hover {
+  background: #5aba3e;
+  box-shadow: 0 5px 18px rgba(107, 203, 74, 0.35);
+}
+
+#blindbug-toolbar.bb-light button.bb-close {
+  color: #999;
+  background: transparent;
+  box-shadow: none;
+}
+
+#blindbug-toolbar.bb-light button.bb-close:hover {
+  background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(255, 77, 77, 0.3);
+}
+
+#blindbug-toolbar.bb-light button.bb-theme {
+  background: transparent;
+  box-shadow: none;
+}
+
+#blindbug-toolbar.bb-light button.bb-undo:disabled {
+  box-shadow: none;
+}
+
+#blindbug-toolbar.bb-light .bb-opacity-label {
+  color: #8888aa;
+}
+
+#blindbug-toolbar.bb-light .bb-opacity-value {
+  color: #3a3a50;
+}
+
+#blindbug-toast.bb-light {
+  background: #ffffff;
+  color: #3a3a50;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }

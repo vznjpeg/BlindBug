@@ -27,8 +27,12 @@
     save: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
     undo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 105.64-11.36L1 10"/></svg>`,
     eraser: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16a1.5 1.5 0 010-2.12L14.88 2a1.5 1.5 0 012.12 0L21 6.12a1.5 1.5 0 010 2.12L11 18"/><path d="M6 12l6 6"/></svg>`,
-    title: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`
+    title: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`,
+    sun: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+    moon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`
   };
+
+  let lightMode = false;
 
   // ---- Build Toolbar ----
   const toolbar = document.createElement('div');
@@ -51,6 +55,7 @@
       <button class="bb-opacity-btn" data-tool="blur-up" title="Increase blur intensity">+</button>
     </div>
     <div class="bb-sep"></div>
+    <button data-tool="theme" class="bb-theme" title="Toggle light / dark mode">${ICONS.sun}</button>
     <button data-tool="close" class="bb-close" title="Hide toolbar on this page">&times;</button>
   `;
   document.documentElement.appendChild(toolbar);
@@ -325,6 +330,21 @@
     updateUndoBtn();
   }
 
+  // ---- Theme toggle ----
+  function applyTheme(isLight) {
+    lightMode = isLight;
+    toolbar.classList.toggle('bb-light', isLight);
+    toast.classList.toggle('bb-light', isLight);
+    const themeBtn = toolbar.querySelector('[data-tool="theme"]');
+    if (themeBtn) themeBtn.innerHTML = isLight ? ICONS.moon : ICONS.sun;
+  }
+
+  function toggleTheme() {
+    applyTheme(!lightMode);
+    chrome.storage?.local?.set({ blindbugLightMode: lightMode });
+    showToast(lightMode ? 'Light mode' : 'Dark mode');
+  }
+
   // ---- Opacity / blur-level helpers ----
   function updateBlurLabel() {
     const label = toolbar.querySelector('#bb-blur-val');
@@ -366,6 +386,9 @@
       case 'blur-down':
         adjustBlur(-BLUR_STEP);
         break;
+      case 'theme':
+        toggleTheme();
+        break;
       case 'close':
         toolbar.classList.add('blindbug-hidden');
         setTool(null);
@@ -393,13 +416,16 @@
     }
   });
 
-  // ---- Apply saved enabled/disabled state on load ----
-  chrome.storage?.local?.get('blindbugEnabled', (data) => {
+  // ---- Apply saved state on load ----
+  chrome.storage?.local?.get(['blindbugEnabled', 'blindbugLightMode'], (data) => {
     const enabled = data.blindbugEnabled !== false; // default on
     toolbar.classList.toggle('blindbug-hidden', !enabled);
     if (!enabled) {
       setTool(null);
       canvas.classList.remove('bb-drawing', 'bb-erasing');
+    }
+    if (data.blindbugLightMode) {
+      applyTheme(true);
     }
   });
 
