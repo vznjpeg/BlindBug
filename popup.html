@@ -63,6 +63,64 @@
       color: #1a1a2e;
     }
 
+    /* Trial countdown bar */
+    .trial-bar {
+      padding: 10px 20px;
+      border-bottom: 1px solid #1e1e36;
+    }
+
+    .trial-bar.hidden {
+      display: none;
+    }
+
+    .trial-bar.expired .trial-label {
+      color: #ff6b6b;
+    }
+
+    .trial-bar.expired .trial-time {
+      color: #ff6b6b;
+    }
+
+    .trial-bar.expired .trial-fill {
+      background: #ff6b6b !important;
+    }
+
+    .trial-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .trial-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6BCB4A;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .trial-time {
+      font-size: 11px;
+      color: #c5c5e0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .trial-track {
+      width: 100%;
+      height: 4px;
+      background: #2d2d4a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .trial-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6BCB4A, #7ED95C);
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
     /* Description */
     .desc {
       padding: 16px 20px;
@@ -418,6 +476,17 @@
     <div>
       <div class="title">BlindBug <span class="badge free" id="bb-badge">FREE</span></div>
       <div class="subtitle">Blur sensitive data instantly</div>
+    </div>
+  </div>
+
+  <!-- Trial countdown bar -->
+  <div class="trial-bar" id="bb-trial-bar">
+    <div class="trial-info">
+      <span class="trial-label">Free trial</span>
+      <span class="trial-time" id="bb-trial-time"></span>
+    </div>
+    <div class="trial-track">
+      <div class="trial-fill" id="bb-trial-fill"></div>
     </div>
   </div>
 
