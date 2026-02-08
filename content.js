@@ -29,7 +29,8 @@
     eraser: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16a1.5 1.5 0 010-2.12L14.88 2a1.5 1.5 0 012.12 0L21 6.12a1.5 1.5 0 010 2.12L11 18"/><path d="M6 12l6 6"/></svg>`,
     title: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`,
     sun: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
-    moon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`
+    moon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`,
+    bomb: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="9"/><path d="M14.35 4.65L16.5 2.5"/><path d="M16.5 2.5l3 1"/><path d="M16.5 2.5l1 3"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="14" y1="10" x2="14.01" y2="10"/><path d="M8 16c1.5 1 3.5 1 6 0"/></svg>`
   };
 
   let lightMode = false;
@@ -47,6 +48,7 @@
     <button data-tool="undo" class="bb-undo" title="Undo last action">${ICONS.undo}<span>Undo</span></button>
     <div class="bb-sep"></div>
     <button data-tool="title" title="Hide / show page title">${ICONS.title}<span>Hide Title</span></button>
+    <button data-tool="bomb" class="bb-bomb" title="Clear ALL blurs on this page">${ICONS.bomb}<span>Clear All</span></button>
     <div class="bb-sep"></div>
     <div class="bb-opacity-group">
       <span class="bb-opacity-label">Blur</span>
@@ -330,6 +332,38 @@
     updateUndoBtn();
   }
 
+  // ---- Clear All (Bomb) ----
+  function clearAll() {
+    const totalPending = pendingRegions.length;
+    const totalSaved = savedRegions.length;
+    const total = totalPending + totalSaved;
+
+    if (total === 0 && !titleHidden) {
+      showToast('Nothing to clear');
+      return;
+    }
+
+    // Remove all pending regions
+    pendingRegions.forEach((el) => el.remove());
+    pendingRegions = [];
+
+    // Remove all saved regions
+    savedRegions.forEach((el) => el.remove());
+    savedRegions = [];
+
+    // Restore title if hidden
+    if (titleHidden) {
+      setTitleVisibility(true);
+    }
+
+    // Clear undo stack (everything is gone)
+    undoStack = [];
+    updateUndoBtn();
+
+    setTool(null);
+    showToast(`Cleared ${total} blur region${total !== 1 ? 's' : ''} + restored title`);
+  }
+
   // ---- Theme toggle ----
   function applyTheme(isLight) {
     lightMode = isLight;
@@ -379,6 +413,9 @@
         break;
       case 'title':
         toggleTitle();
+        break;
+      case 'bomb':
+        clearAll();
         break;
       case 'blur-up':
         adjustBlur(BLUR_STEP);

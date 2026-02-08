@@ -136,6 +136,28 @@
   box-shadow: 0 3px 12px rgba(255, 77, 77, 0.4);
 }
 
+/* Bomb / clear-all button */
+#blindbug-toolbar button.bb-bomb {
+  color: #ff8c42;
+}
+
+#blindbug-toolbar button.bb-bomb:hover {
+  background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(255, 77, 77, 0.4);
+}
+
+#blindbug-toolbar.bb-light button.bb-bomb {
+  color: #e06520;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+#blindbug-toolbar.bb-light button.bb-bomb:hover {
+  background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(255, 77, 77, 0.3);
+}
+
 /* Theme toggle button */
 #blindbug-toolbar button.bb-theme {
   width: 28px;
