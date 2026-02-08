@@ -6,8 +6,8 @@
 // Create them at: https://dashboard.stripe.com/payment-links
 // ============================================================
 const STRIPE_LINKS = {
-  professional: 'https://buy.stripe.com/YOUR_PROFESSIONAL_LINK_HERE',
-  startup: 'https://buy.stripe.com/YOUR_STARTUP_LINK_HERE'
+  monthly: 'https://buy.stripe.com/YOUR_MONTHLY_LINK_HERE',
+  lifetime: 'https://buy.stripe.com/YOUR_LIFETIME_LINK_HERE'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
