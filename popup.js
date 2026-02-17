@@ -1,28 +1,47 @@
 // popup.js – BlindBug popup logic
 
 document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.getElementById('bb-toggle');
+  const powerBtn = document.getElementById('bb-power');
+  const powerLabel = document.getElementById('bb-power-label');
+  const powerStatus = document.getElementById('bb-power-status');
 
-  // Load saved state
+  function updateUI(enabled) {
+    if (enabled) {
+      powerBtn.className = 'power-btn on';
+      powerLabel.textContent = 'Turn Off BlindBug';
+      powerStatus.textContent = 'BlindBug is active on all pages';
+    } else {
+      powerBtn.className = 'power-btn off';
+      powerLabel.textContent = 'Turn On BlindBug';
+      powerStatus.textContent = 'BlindBug is hidden on all pages';
+    }
+  }
+
+  // Load saved state (default ON)
   chrome.storage?.local?.get('blindbugEnabled', (data) => {
-    const enabled = data.blindbugEnabled === true; // default OFF
-    toggle.classList.toggle('active', enabled);
+    const enabled = data.blindbugEnabled !== false;
+    updateUI(enabled);
   });
 
-  toggle.addEventListener('click', () => {
-    const isActive = toggle.classList.toggle('active');
+  powerBtn.addEventListener('click', () => {
+    chrome.storage?.local?.get('blindbugEnabled', (data) => {
+      const wasEnabled = data.blindbugEnabled !== false;
+      const nowEnabled = !wasEnabled;
 
-    // Persist state
-    chrome.storage?.local?.set({ blindbugEnabled: isActive });
+      chrome.storage.local.set({ blindbugEnabled: nowEnabled });
+      updateUI(nowEnabled);
 
-    // Send toggle message to content script
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]?.id) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          type: 'blindbug-toggle',
-          enabled: isActive
+      // Notify all tabs
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          if (tab.id) {
+            chrome.tabs.sendMessage(tab.id, {
+              type: 'blindbug-toggle',
+              enabled: nowEnabled
+            }).catch(() => {}); // ignore tabs without content script
+          }
         });
-      }
+      });
     });
   });
 });
