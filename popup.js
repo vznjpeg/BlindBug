@@ -44,4 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  // ---- Request a Feature ----
+  document.getElementById('bb-feature-req').addEventListener('click', () => {
+    chrome.tabs.create({ url: 'https://forms.gle/Udyvmu4zc48qMqqi8' });
+  });
+
+  // ---- Support toggle ----
+  document.getElementById('bb-support-btn').addEventListener('click', () => {
+    document.getElementById('bb-support-panel').classList.toggle('show');
+  });
 });

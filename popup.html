@@ -150,6 +150,105 @@
       color: #555577;
     }
 
+    /* Bottom actions */
+    .bottom-actions {
+      padding: 0 20px 6px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .bottom-actions button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 0;
+      border: 1px solid #2d2d4a;
+      border-radius: 8px;
+      background: #1a1a2e;
+      color: #8888aa;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .bottom-actions button:hover {
+      background: #2d2d4a;
+      color: #c5c5e0;
+      border-color: #3a3a5e;
+    }
+
+    .bottom-actions button svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    /* Support panel */
+    .support-panel {
+      display: none;
+      padding: 14px 20px;
+      border-top: 1px solid #1e1e36;
+    }
+
+    .support-panel.show {
+      display: block;
+    }
+
+    .support-panel h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ff8c42;
+      margin-bottom: 8px;
+    }
+
+    .support-panel p {
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #aaaacc;
+      margin-bottom: 8px;
+    }
+
+    .support-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px;
+    }
+
+    .support-panel ul li {
+      font-size: 11px;
+      color: #8888aa;
+      padding: 2px 0 2px 14px;
+      position: relative;
+    }
+
+    .support-panel ul li::before {
+      content: '-';
+      position: absolute;
+      left: 4px;
+      color: #555577;
+    }
+
+    .support-panel .email-link {
+      color: #6BCB4A;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .support-panel .email-link:hover {
+      text-decoration: underline;
+    }
+
+    .support-panel .include-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #c5c5e0;
+      margin-bottom: 4px;
+    }
+
     /* Footer */
     .footer {
       padding: 10px 20px 14px;
@@ -212,6 +311,37 @@
       <span id="bb-power-label">Turn Off BlindBug</span>
     </button>
     <div class="power-status" id="bb-power-status">BlindBug is active on all pages</div>
+  </div>
+
+  <div class="bottom-actions">
+    <button id="bb-feature-req">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Request a Feature
+    </button>
+    <button id="bb-support-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Support
+    </button>
+  </div>
+
+  <div class="support-panel" id="bb-support-panel">
+    <h4>BlindBug isn't working?</h4>
+    <p>First, try the following:</p>
+    <ul>
+      <li>Refresh the webpage</li>
+      <li>Close all tabs and restart the browser</li>
+      <li>Disable any other extensions</li>
+      <li>Disable and re-enable BlindBug</li>
+      <li>Uninstall and reinstall BlindBug</li>
+    </ul>
+    <p>If the problem persists, email me at <a class="email-link" href="mailto:vzn.jpeg@gmail.com">vzn.jpeg@gmail.com</a></p>
+    <p class="include-label">To help me help you faster, include:</p>
+    <ul>
+      <li>Description of the issue</li>
+      <li>Screenshot or video</li>
+      <li>Browser (ex: Chrome)</li>
+      <li>Version of BlindBug</li>
+    </ul>
   </div>
 
   <div class="footer">
