@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load saved state
   chrome.storage?.local?.get('blindbugEnabled', (data) => {
-    const enabled = data.blindbugEnabled !== false; // default on
+    const enabled = data.blindbugEnabled === true; // default OFF
     toggle.classList.toggle('active', enabled);
   });
 

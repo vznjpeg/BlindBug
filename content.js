@@ -455,7 +455,7 @@
 
   // ---- Apply saved state on load ----
   chrome.storage?.local?.get(['blindbugEnabled', 'blindbugLightMode'], (data) => {
-    const enabled = data.blindbugEnabled !== false; // default on
+    const enabled = data.blindbugEnabled === true; // default OFF until user enables
     toolbar.classList.toggle('blindbug-hidden', !enabled);
     if (!enabled) {
       setTool(null);
