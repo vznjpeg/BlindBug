@@ -34,8 +34,6 @@
   };
 
   let lightMode = false;
-  const TRIAL_DAYS = 4;
-  const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
 
   // ---- Build Toolbar ----
   const toolbar = document.createElement('div');
@@ -88,62 +86,6 @@
     clearTimeout(toast._timer);
     toast._timer = setTimeout(() => toast.classList.remove('bb-show'), 1800);
   }
-
-  // ---- Trial expiry overlay ----
-  const expiry = document.createElement('div');
-  expiry.id = 'blindbug-expiry';
-  expiry.innerHTML = `
-    <div class="bb-expiry-card">
-      <div class="bb-expiry-icon">&#9201;</div>
-      <div class="bb-expiry-title">Free trial ended</div>
-      <div class="bb-expiry-text">Your 4-day BlindBug trial has expired.<br>Upgrade to keep blurring.</div>
-      <button id="bb-expiry-upgrade">Upgrade Now</button>
-    </div>
-  `;
-  document.documentElement.appendChild(expiry);
-
-  expiry.querySelector('#bb-expiry-upgrade').addEventListener('click', () => {
-    // Open the extension popup (can't do directly, so open Stripe link)
-    const url = 'https://buy.stripe.com/00w3cwghzfDfgP6h2fao80g';
-    window.open(url, '_blank');
-  });
-
-  function lockToolbar() {
-    toolbar.classList.add('blindbug-expired');
-    expiry.classList.add('bb-show');
-    setTool(null);
-    canvas.classList.remove('bb-drawing', 'bb-erasing');
-  }
-
-  function unlockToolbar() {
-    toolbar.classList.remove('blindbug-expired');
-    expiry.classList.remove('bb-show');
-  }
-
-  // ---- Trial check on load ----
-  function checkTrial() {
-    chrome.storage?.local?.get(['blindbugTrialStart', 'blindbugLicense'], (data) => {
-      // Licensed users skip trial
-      if (data.blindbugLicense) {
-        unlockToolbar();
-        return;
-      }
-
-      // First ever use — stamp the trial start
-      if (!data.blindbugTrialStart) {
-        chrome.storage.local.set({ blindbugTrialStart: Date.now() });
-        return; // trial just started, all good
-      }
-
-      const elapsed = Date.now() - data.blindbugTrialStart;
-      if (elapsed >= TRIAL_MS) {
-        lockToolbar();
-      } else {
-        unlockToolbar();
-      }
-    });
-  }
-  checkTrial();
 
   // ---- Undo button state ----
   function updateUndoBtn() {
@@ -532,10 +474,6 @@
         setTool(null);
         canvas.classList.remove('bb-drawing', 'bb-erasing');
       }
-    }
-    // Re-check trial when license is activated from popup
-    if (msg.type === 'blindbug-license-changed') {
-      checkTrial();
     }
   });
 
