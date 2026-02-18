@@ -62,6 +62,29 @@
   `;
   document.documentElement.appendChild(toolbar);
 
+  // ---- Build Reopen Button (shown when toolbar is minimized) ----
+  const reopenBtn = document.createElement('button');
+  reopenBtn.id = 'blindbug-reopen';
+  reopenBtn.title = 'Show BlindBug toolbar';
+  reopenBtn.innerHTML = `<img src="${chrome.runtime.getURL('icons/icon48.png')}" alt="BlindBug">`;
+  reopenBtn.classList.add('blindbug-hidden');
+  document.documentElement.appendChild(reopenBtn);
+
+  reopenBtn.addEventListener('click', () => {
+    toolbar.classList.remove('blindbug-hidden');
+    reopenBtn.classList.add('blindbug-hidden');
+    chrome.storage?.local?.set({ blindbugEnabled: true });
+  });
+
+  function setToolbarVisible(visible) {
+    toolbar.classList.toggle('blindbug-hidden', !visible);
+    reopenBtn.classList.toggle('blindbug-hidden', visible);
+    if (!visible) {
+      setTool(null);
+      canvas.classList.remove('bb-drawing', 'bb-erasing');
+    }
+  }
+
   // ---- Build Canvas (for drawing selection rectangles) ----
   const canvas = document.createElement('canvas');
   canvas.id = 'blindbug-canvas';
@@ -427,9 +450,7 @@
         toggleTheme();
         break;
       case 'close':
-        toolbar.classList.add('blindbug-hidden');
-        setTool(null);
-        canvas.classList.remove('bb-drawing', 'bb-erasing');
+        setToolbarVisible(false);
         chrome.storage?.local?.set({ blindbugEnabled: false });
         break;
     }
@@ -456,11 +477,7 @@
   // ---- Apply saved state on load ----
   chrome.storage?.local?.get(['blindbugEnabled', 'blindbugLightMode'], (data) => {
     const enabled = data.blindbugEnabled !== false; // default ON
-    toolbar.classList.toggle('blindbug-hidden', !enabled);
-    if (!enabled) {
-      setTool(null);
-      canvas.classList.remove('bb-drawing', 'bb-erasing');
-    }
+    setToolbarVisible(enabled);
     if (data.blindbugLightMode) {
       applyTheme(true);
     }
@@ -469,11 +486,7 @@
   // ---- Listen for popup messages ----
   chrome.runtime?.onMessage?.addListener((msg) => {
     if (msg.type === 'blindbug-toggle') {
-      toolbar.classList.toggle('blindbug-hidden', !msg.enabled);
-      if (!msg.enabled) {
-        setTool(null);
-        canvas.classList.remove('bb-drawing', 'bb-erasing');
-      }
+      setToolbarVisible(msg.enabled);
     }
   });
 

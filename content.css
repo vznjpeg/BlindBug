@@ -27,6 +27,50 @@
   pointer-events: none;
 }
 
+/* ---------- Reopen Button (bottom-right, shown when toolbar is minimized) ---------- */
+#blindbug-reopen {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483647;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #2d2d4a;
+  border-radius: 50%;
+  background: #1a1a2e;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.25s, transform 0.2s, box-shadow 0.2s;
+  opacity: 1;
+}
+
+#blindbug-reopen img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+#blindbug-reopen:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(107, 203, 74, 0.35);
+  border-color: #6BCB4A;
+}
+
+#blindbug-reopen:active {
+  transform: scale(0.95);
+}
+
+#blindbug-reopen.blindbug-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Logo in toolbar */
 #blindbug-toolbar .bb-logo {
   width: 26px;
